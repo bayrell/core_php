@@ -1,0 +1,18 @@
+{
+	"name": "bayrell/runtime_ui",
+	"type": "library",
+	"description": "Bayrell Runtime",
+	"version": "0.7.0",
+	"license": "Apache-2.0",
+	"authors": [
+		{
+			"name": "Ildar Bikmamatov",
+			"email": "support@bayrell.org"
+		}
+	],
+	"autoload": {
+		"psr-4": { "RuntimeUI\\": "" }
+	},
+	"require": {
+	}
+}

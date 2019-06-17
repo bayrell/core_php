@@ -1,14 +1,14 @@
 <?php
 /*!
- *  Bayrell Runtime Library
+ *  Bayrell Core Library
  *
- *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace RuntimeUI\Http;
+namespace Core\Http;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -35,6 +35,7 @@ class ApiResult extends CoreStruct{
 	protected $__method_name;
 	protected $__text;
 	protected $__result;
+	protected $__params;
 	/**
 	 * Returns true if success
 	 * @param ApiResult res
@@ -50,16 +51,17 @@ class ApiResult extends CoreStruct{
 	 * @param ApiResult res
 	 * @return ApiResult
 	 */
-	static function setError($code, $error = "", $res){
-		$succes = false;
+	static function setError($res, $code, $error = ""){
+		$success = false;
 		if ($code >= RuntimeConstant::ERROR_OK){
-			$succes = true;
+			$success = true;
 		}
 		return $res->copy((new Map())->set("code", $code)->set("error", $error)->set("success", $success));
 	}
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "RuntimeUI.Http.ApiResult";}
-	public static function getCurrentClassName(){return "RuntimeUI.Http.ApiResult";}
+	public function getClassName(){return "Core.Http.ApiResult";}
+	public static function getCurrentNamespace(){return "Core.Http";}
+	public static function getCurrentClassName(){return "Core.Http.ApiResult";}
 	public static function getParentClassName(){return "Runtime.CoreStruct";}
 	protected function _init(){
 		parent::_init();
@@ -70,6 +72,7 @@ class ApiResult extends CoreStruct{
 		$this->__method_name = "";
 		$this->__text = "";
 		$this->__result = null;
+		$this->__params = null;
 	}
 	public function assignObject($obj){
 		if ($obj instanceof ApiResult){
@@ -80,6 +83,7 @@ class ApiResult extends CoreStruct{
 			$this->__method_name = $obj->__method_name;
 			$this->__text = $obj->__text;
 			$this->__result = $obj->__result;
+			$this->__params = $obj->__params;
 		}
 		parent::assignObject($obj);
 	}
@@ -91,6 +95,7 @@ class ApiResult extends CoreStruct{
 		else if ($variable_name == "method_name")$this->__method_name = rtl::convert($value,"string","","");
 		else if ($variable_name == "text")$this->__text = rtl::convert($value,"string","","");
 		else if ($variable_name == "result")$this->__result = rtl::convert($value,"primitive",null,"");
+		else if ($variable_name == "params")$this->__params = rtl::convert($value,"primitive",null,"");
 		else parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
@@ -101,6 +106,7 @@ class ApiResult extends CoreStruct{
 		else if ($variable_name == "method_name") return $this->__method_name;
 		else if ($variable_name == "text") return $this->__text;
 		else if ($variable_name == "result") return $this->__result;
+		else if ($variable_name == "params") return $this->__params;
 		return parent::takeValue($variable_name, $default_value);
 	}
 	public static function getFieldsList($names, $flag=0){
@@ -112,9 +118,15 @@ class ApiResult extends CoreStruct{
 			$names->push("method_name");
 			$names->push("text");
 			$names->push("result");
+			$names->push("params");
 		}
 	}
 	public static function getFieldInfoByName($field_name){
+		return null;
+	}
+	public static function getMethodsList($names){
+	}
+	public static function getMethodInfoByName($method_name){
 		return null;
 	}
 	public function __get($key){ return $this->takeValue($key); }

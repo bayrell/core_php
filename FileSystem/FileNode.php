@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace Core\Http;
+namespace Core\FileSystem;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -26,52 +26,49 @@ use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
 use Runtime\CoreStruct;
-use Core\Http\Request;
-class ApiRequest extends CoreStruct{
-	protected $__data;
-	/**
-	 * Assing request
-	 * @param Request request
-	 * @param ApiRequest req
-	 * @return ApiRequest
-	 */
-	static function assignRequest($req, $request){
-		if ($request == null){
-			return ;
-		}
-		$data = new Map();
-		/* Get data */
-		$request->payload->each(function ($key, $value) use (&$data){
-			$data->set($key, $value);
-		});
-		return $req->copy((new Map())->set("data", $data));
-	}
+class FileNode extends CoreStruct{
+	const KIND_FOLDER = "folder";
+	const KIND_SYMLINK = "symlink";
+	const KIND_FILE = "file";
+	protected $__name;
+	protected $__kind;
+	protected $__items;
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "Core.Http.ApiRequest";}
-	public static function getCurrentNamespace(){return "Core.Http";}
-	public static function getCurrentClassName(){return "Core.Http.ApiRequest";}
+	public function getClassName(){return "Core.FileSystem.FileNode";}
+	public static function getCurrentNamespace(){return "Core.FileSystem";}
+	public static function getCurrentClassName(){return "Core.FileSystem.FileNode";}
 	public static function getParentClassName(){return "Runtime.CoreStruct";}
 	protected function _init(){
 		parent::_init();
-		$this->__data = null;
+		$this->__name = "";
+		$this->__kind = "";
+		$this->__items = null;
 	}
 	public function assignObject($obj){
-		if ($obj instanceof ApiRequest){
-			$this->__data = $obj->__data;
+		if ($obj instanceof FileNode){
+			$this->__name = $obj->__name;
+			$this->__kind = $obj->__kind;
+			$this->__items = $obj->__items;
 		}
 		parent::assignObject($obj);
 	}
 	public function assignValue($variable_name, $value, $sender = null){
-		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",null,"mixed");
+		if ($variable_name == "name")$this->__name = rtl::convert($value,"string","","");
+		else if ($variable_name == "kind")$this->__kind = rtl::convert($value,"string","","");
+		else if ($variable_name == "items")$this->__items = rtl::convert($value,"Runtime.Collection",null,"Core.FileSystem.FileNode");
 		else parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
-		if ($variable_name == "data") return $this->__data;
+		if ($variable_name == "name") return $this->__name;
+		else if ($variable_name == "kind") return $this->__kind;
+		else if ($variable_name == "items") return $this->__items;
 		return parent::takeValue($variable_name, $default_value);
 	}
 	public static function getFieldsList($names, $flag=0){
 		if (($flag | 3)==3){
-			$names->push("data");
+			$names->push("name");
+			$names->push("kind");
+			$names->push("items");
 		}
 	}
 	public static function getFieldInfoByName($field_name){

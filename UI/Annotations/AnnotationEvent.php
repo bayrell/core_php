@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace Core\Http;
+namespace Core\UI\Annotations;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -25,54 +25,61 @@ use Runtime\Dict;
 use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
+use Runtime\Interfaces\ContextInterface;
 use Runtime\CoreStruct;
-use Core\Http\Request;
-class ApiRequest extends CoreStruct{
-	protected $__data;
+use Core\UI\Render\CoreManager;
+use Core\UI\UIController;
+use Core\UI\UIEvent;
+class AnnotationEvent extends CoreStruct{
 	/**
-	 * Assing request
-	 * @param Request request
-	 * @param ApiRequest req
-	 * @return ApiRequest
+	 * OnEvent
 	 */
-	static function assignRequest($req, $request){
-		if ($request == null){
-			return ;
-		}
-		$data = new Map();
-		/* Get data */
-		$request->payload->each(function ($key, $value) use (&$data){
-			$data->set($key, $value);
-		});
-		return $req->copy((new Map())->set("data", $data));
+	function events(){
+		return (new Vector());
+	}
+	/**
+	 * OnEvent
+	 */
+	static function onEvent($manager, $e){
+	}
+	/**
+	 * Factory onEvent
+	 */
+	static function onEventFactory($manager, $ui, $annotation){
+		return function ($event){
+			$ui_event = new UIEvent((new Map())->set("annotation", $annotation)->set("event", $event)->set("ui", $ui));
+			static::onEvent($manager, $ui_event);
+		};
+	}
+	/**
+	 * Add Emitter
+	 */
+	static function addEmitter($manager, $emitter, $ui, $annotation){
+	}
+	/**
+	 * Dispatch Event
+	 */
+	static function dispatch($manager, $ui, $annotation, $event, $ref = null){
+		$ui_event = new UIEvent((new Map())->set("annotation", $annotation)->set("event", $event)->set("ref", $ref)->set("ui", $ui));
+		static::onEvent($manager, $ui_event);
 	}
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "Core.Http.ApiRequest";}
-	public static function getCurrentNamespace(){return "Core.Http";}
-	public static function getCurrentClassName(){return "Core.Http.ApiRequest";}
+	public function getClassName(){return "Core.UI.Annotations.AnnotationEvent";}
+	public static function getCurrentNamespace(){return "Core.UI.Annotations";}
+	public static function getCurrentClassName(){return "Core.UI.Annotations.AnnotationEvent";}
 	public static function getParentClassName(){return "Runtime.CoreStruct";}
-	protected function _init(){
-		parent::_init();
-		$this->__data = null;
-	}
 	public function assignObject($obj){
-		if ($obj instanceof ApiRequest){
-			$this->__data = $obj->__data;
+		if ($obj instanceof AnnotationEvent){
 		}
 		parent::assignObject($obj);
 	}
 	public function assignValue($variable_name, $value, $sender = null){
-		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",null,"mixed");
-		else parent::assignValue($variable_name, $value, $sender);
+		parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
-		if ($variable_name == "data") return $this->__data;
 		return parent::takeValue($variable_name, $default_value);
 	}
 	public static function getFieldsList($names, $flag=0){
-		if (($flag | 3)==3){
-			$names->push("data");
-		}
 	}
 	public static function getFieldInfoByName($field_name){
 		return null;

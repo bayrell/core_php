@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace Core\Http;
+namespace Core\UI\Annotations;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -26,52 +26,40 @@ use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
 use Runtime\CoreStruct;
-use Core\Http\Request;
-class ApiRequest extends CoreStruct{
-	protected $__data;
-	/**
-	 * Assing request
-	 * @param Request request
-	 * @param ApiRequest req
-	 * @return ApiRequest
-	 */
-	static function assignRequest($req, $request){
-		if ($request == null){
-			return ;
-		}
-		$data = new Map();
-		/* Get data */
-		$request->payload->each(function ($key, $value) use (&$data){
-			$data->set($key, $value);
-		});
-		return $req->copy((new Map())->set("data", $data));
-	}
+class ApiMethod extends CoreStruct{
+	protected $__space;
+	protected $__name;
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "Core.Http.ApiRequest";}
-	public static function getCurrentNamespace(){return "Core.Http";}
-	public static function getCurrentClassName(){return "Core.Http.ApiRequest";}
+	public function getClassName(){return "Core.UI.Annotations.ApiMethod";}
+	public static function getCurrentNamespace(){return "Core.UI.Annotations";}
+	public static function getCurrentClassName(){return "Core.UI.Annotations.ApiMethod";}
 	public static function getParentClassName(){return "Runtime.CoreStruct";}
 	protected function _init(){
 		parent::_init();
-		$this->__data = null;
+		$this->__space = "";
+		$this->__name = "";
 	}
 	public function assignObject($obj){
-		if ($obj instanceof ApiRequest){
-			$this->__data = $obj->__data;
+		if ($obj instanceof ApiMethod){
+			$this->__space = $obj->__space;
+			$this->__name = $obj->__name;
 		}
 		parent::assignObject($obj);
 	}
 	public function assignValue($variable_name, $value, $sender = null){
-		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",null,"mixed");
+		if ($variable_name == "space")$this->__space = rtl::convert($value,"string","","");
+		else if ($variable_name == "name")$this->__name = rtl::convert($value,"string","","");
 		else parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
-		if ($variable_name == "data") return $this->__data;
+		if ($variable_name == "space") return $this->__space;
+		else if ($variable_name == "name") return $this->__name;
 		return parent::takeValue($variable_name, $default_value);
 	}
 	public static function getFieldsList($names, $flag=0){
 		if (($flag | 3)==3){
-			$names->push("data");
+			$names->push("space");
+			$names->push("name");
 		}
 	}
 	public static function getFieldInfoByName($field_name){

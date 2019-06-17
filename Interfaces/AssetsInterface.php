@@ -1,6 +1,6 @@
 <?php
 /*!
- *  Bayrell Runtime Library
+ *  Bayrell Core Library
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -8,7 +8,7 @@
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace RuntimeUI\Interfaces;
+namespace Core\Interfaces;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -25,24 +25,34 @@ use Runtime\Dict;
 use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
-use RuntimeUI\Render\RenderContainer;
+use Core\UI\Render\RenderContainer;
 interface AssetsInterface{
 	/**
-	 * Returns required assets
-	 * @return Vector<string>
+	 * Returns module name
+	 * @return string
 	 */
-	static function getRequiredAssets($context);
+	static function getModuleName();
+	/**
+	 * Returns required modules
+	 * @return Dict<string>
+	 */
+	static function requiredModules();
+	/**
+	 * Returns module files load order
+	 * @return Collection<string>
+	 */
+	static function getModuleFiles();
+	/**
+	 * Returns required assets
+	 * @return Collection<string>
+	 */
+	static function assets($container);
 	/**
 	 * Returns sync loaded files
 	 */
-	static function assetsSyncLoad($context);
-	/**
-	 * Returns async loaded files
-	 */
-	static function assetsAsyncLoad($context);
+	static function resources($container);
 	/**
 	 * Init render container
 	 */
 	static function initContainer($container);
-	/* ======================= Class Init Functions ======================= */
 }

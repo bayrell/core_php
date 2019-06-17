@@ -1,8 +1,8 @@
 {
-	"name": "bayrell/runtime_ui",
+	"name": "bayrell/core",
 	"type": "library",
 	"description": "Bayrell Runtime",
-	"version": "0.7.0",
+	"version": "0.7.3",
 	"license": "Apache-2.0",
 	"authors": [
 		{

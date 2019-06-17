@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace Core\Interfaces;
+namespace Core\UI\Render;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -25,15 +25,35 @@ use Runtime\Dict;
 use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
-use Core\Http\Request;
+use Runtime\CoreObject;
+use Core\Interfaces\RoutesInterface;
 use Core\UI\Render\WebContainer;
-interface RoutesInterface{
+class CoreRoute extends CoreObject implements RoutesInterface{
 	/**
 	 * Before call method
 	 */
-	static function before($container, $name);
+	static function before($container, $name){
+		return $container;
+	}
 	/**
 	 * Before call method
 	 */
-	static function after($container, $name);
+	static function after($container, $name){
+		return $container;
+	}
+	/* ======================= Class Init Functions ======================= */
+	public function getClassName(){return "Core.UI.Render.CoreRoute";}
+	public static function getCurrentNamespace(){return "Core.UI.Render";}
+	public static function getCurrentClassName(){return "Core.UI.Render.CoreRoute";}
+	public static function getParentClassName(){return "Runtime.CoreObject";}
+	public static function getFieldsList($names, $flag=0){
+	}
+	public static function getFieldInfoByName($field_name){
+		return null;
+	}
+	public static function getMethodsList($names){
+	}
+	public static function getMethodInfoByName($method_name){
+		return null;
+	}
 }

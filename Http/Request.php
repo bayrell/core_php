@@ -1,14 +1,14 @@
 <?php
 /*!
- *  Bayrell Runtime Library
+ *  Bayrell Core Library
  *
- *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace RuntimeUI\Http;
+namespace Core\Http;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -26,6 +26,7 @@ use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
 use Runtime\CoreStruct;
+use Runtime\RuntimeUtils;
 class Request extends CoreStruct{
 	const METHOD_GET = "GET";
 	const METHOD_HEAD = "HEAD";
@@ -45,9 +46,46 @@ class Request extends CoreStruct{
 	protected $__headers;
 	protected $__params;
 	protected $__start_time;
+	/**
+	 * Send response
+	 * @return Response res
+	 */
+	static function createPHPRequest(){
+		$r = null;
+		
+		$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : "";
+		$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : "";
+		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : "";
+		$start_time = isset($_SERVER['REQUEST_TIME_FLOAT']) ? $_SERVER['REQUEST_TIME_FLOAT'] : "";
+		$query = new Map();
+		$payload = new Map();
+		$cookies = new Map();
+		foreach ($_GET as $key => $val) $query->set($key, $val);
+		foreach ($_POST as $key => $val){
+			$payload->set($key, RuntimeUtils::NativeToObject($val));
+		}
+		foreach ($_COOKIE as $key => $val) $cookies->set($key, $val);
+		
+		$arr = parse_url($uri);
+		$uri = isset($arr['path']) ? $arr['path'] : "";
+		
+		$r = new Request(
+			new Map([
+				"host" => $host,
+				"uri" => $uri,
+				"method" => $method,
+				"query" => $query->toDict(),
+				"payload" => $payload->toDict(),
+				"cookies" => $cookies->toDict(),
+				"start_time" => $start_time,
+			])
+		);
+		return $r;
+	}
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "RuntimeUI.Http.Request";}
-	public static function getCurrentClassName(){return "RuntimeUI.Http.Request";}
+	public function getClassName(){return "Core.Http.Request";}
+	public static function getCurrentNamespace(){return "Core.Http";}
+	public static function getCurrentClassName(){return "Core.Http.Request";}
 	public static function getParentClassName(){return "Runtime.CoreStruct";}
 	protected function _init(){
 		parent::_init();
@@ -80,7 +118,7 @@ class Request extends CoreStruct{
 		else if ($variable_name == "host")$this->__host = rtl::convert($value,"string","","");
 		else if ($variable_name == "method")$this->__method = rtl::convert($value,"string","GET","");
 		else if ($variable_name == "query")$this->__query = rtl::convert($value,"Runtime.Dict",null,"string");
-		else if ($variable_name == "payload")$this->__payload = rtl::convert($value,"Runtime.Dict",null,"string");
+		else if ($variable_name == "payload")$this->__payload = rtl::convert($value,"Runtime.Dict",null,"mixed");
 		else if ($variable_name == "cookies")$this->__cookies = rtl::convert($value,"Runtime.Dict",null,"string");
 		else if ($variable_name == "headers")$this->__headers = rtl::convert($value,"Runtime.Dict",null,"string");
 		else if ($variable_name == "params")$this->__params = rtl::convert($value,"Runtime.Dict",null,"string");
@@ -113,6 +151,11 @@ class Request extends CoreStruct{
 		}
 	}
 	public static function getFieldInfoByName($field_name){
+		return null;
+	}
+	public static function getMethodsList($names){
+	}
+	public static function getMethodInfoByName($method_name){
 		return null;
 	}
 	public function __get($key){ return $this->takeValue($key); }

@@ -1,14 +1,14 @@
 <?php
 /*!
- *  Bayrell Runtime Library
+ *  Bayrell Core Library
  *
- *  (c) Copyright 2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2018-2019 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
  *
- *      https://www.bayrell.org/licenses/APACHE-LICENSE-2.0.html
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace RuntimeUI\Http;
+namespace Core\Http;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -27,17 +27,35 @@ use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
 use Runtime\CoreObject;
 use Runtime\RuntimeUtils;
-use RuntimeUI\Http\Request;
-use RuntimeUI\Http\Response;
+use Core\Http\Request;
+use Core\Http\Response;
 class JsonResponse extends Response{
 	protected $__data;
+	/**
+	 * Init struct data
+	 */
+	function initData(){
+		$headers = $this->headers;
+		if ($headers == null){
+			$headers = new Dict();
+		}
+		$headers = $headers->setIm("Content-Type", "application/json");
+		$this->assignValue("headers", $headers);
+	}
+	/**
+	 * Returns content
+	 */
+	function getContent(){
+		return rtl::json_encode($this->data);
+	}
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "RuntimeUI.Http.JsonResponse";}
-	public static function getCurrentClassName(){return "RuntimeUI.Http.JsonResponse";}
-	public static function getParentClassName(){return "RuntimeUI.Http.Response";}
+	public function getClassName(){return "Core.Http.JsonResponse";}
+	public static function getCurrentNamespace(){return "Core.Http";}
+	public static function getCurrentClassName(){return "Core.Http.JsonResponse";}
+	public static function getParentClassName(){return "Core.Http.Response";}
 	protected function _init(){
 		parent::_init();
-		$this->__data = null;
+		$this->__data = new Dict();
 	}
 	public function assignObject($obj){
 		if ($obj instanceof JsonResponse){
@@ -46,7 +64,7 @@ class JsonResponse extends Response{
 		parent::assignObject($obj);
 	}
 	public function assignValue($variable_name, $value, $sender = null){
-		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",null,"primitive");
+		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",new Dict(),"primitive");
 		else parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
@@ -59,6 +77,11 @@ class JsonResponse extends Response{
 		}
 	}
 	public static function getFieldInfoByName($field_name){
+		return null;
+	}
+	public static function getMethodsList($names){
+	}
+	public static function getMethodInfoByName($method_name){
 		return null;
 	}
 	public function __get($key){ return $this->takeValue($key); }

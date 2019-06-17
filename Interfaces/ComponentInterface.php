@@ -25,10 +25,46 @@ use Runtime\Dict;
 use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
-interface FrontendInterface{
+use Core\UI\Render\RenderContainer;
+interface ComponentInterface{
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	static function getName();
+	static function getModuleName();
+	/**
+	 * Returns required modules
+	 * @return Dict<string>
+	 */
+	static function requiredModules();
+	/**
+	 * Returns module files load order
+	 * @return Collection<string>
+	 */
+	static function getModuleFiles();
+	/**
+	 * Returns manager name
+	 */
+	static function componentManagerName();
+	/**
+	 * Returns model name
+	 */
+	static function componentModelName();
+	/**
+	 * Returns model name
+	 */
+	static function componentViewName();
+	/**
+	 * Returns required assets
+	 * @return Collection<string>
+	 */
+	static function assets($container);
+	/**
+	 * Returns sync loaded files
+	 */
+	static function resources($container);
+	/**
+	 * Init render container
+	 */
+	static function initContainer($container);
 }

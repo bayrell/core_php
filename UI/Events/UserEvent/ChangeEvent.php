@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace Core\Http;
+namespace Core\UI\Events\UserEvent;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -25,53 +25,36 @@ use Runtime\Dict;
 use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
-use Runtime\CoreStruct;
-use Core\Http\Request;
-class ApiRequest extends CoreStruct{
-	protected $__data;
-	/**
-	 * Assing request
-	 * @param Request request
-	 * @param ApiRequest req
-	 * @return ApiRequest
-	 */
-	static function assignRequest($req, $request){
-		if ($request == null){
-			return ;
-		}
-		$data = new Map();
-		/* Get data */
-		$request->payload->each(function ($key, $value) use (&$data){
-			$data->set($key, $value);
-		});
-		return $req->copy((new Map())->set("data", $data));
-	}
+use Core\UI\Events\UserEvent\UserEvent;
+class ChangeEvent extends UserEvent{
+	const ES6_EVENT_NAME = "change";
+	protected $__value;
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "Core.Http.ApiRequest";}
-	public static function getCurrentNamespace(){return "Core.Http";}
-	public static function getCurrentClassName(){return "Core.Http.ApiRequest";}
-	public static function getParentClassName(){return "Runtime.CoreStruct";}
+	public function getClassName(){return "Core.UI.Events.UserEvent.ChangeEvent";}
+	public static function getCurrentNamespace(){return "Core.UI.Events.UserEvent";}
+	public static function getCurrentClassName(){return "Core.UI.Events.UserEvent.ChangeEvent";}
+	public static function getParentClassName(){return "Core.UI.Events.UserEvent.UserEvent";}
 	protected function _init(){
 		parent::_init();
-		$this->__data = null;
+		$this->__value = "";
 	}
 	public function assignObject($obj){
-		if ($obj instanceof ApiRequest){
-			$this->__data = $obj->__data;
+		if ($obj instanceof ChangeEvent){
+			$this->__value = $obj->__value;
 		}
 		parent::assignObject($obj);
 	}
 	public function assignValue($variable_name, $value, $sender = null){
-		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",null,"mixed");
+		if ($variable_name == "value")$this->__value = rtl::convert($value,"string","","");
 		else parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
-		if ($variable_name == "data") return $this->__data;
+		if ($variable_name == "value") return $this->__value;
 		return parent::takeValue($variable_name, $default_value);
 	}
 	public static function getFieldsList($names, $flag=0){
 		if (($flag | 3)==3){
-			$names->push("data");
+			$names->push("value");
 		}
 	}
 	public static function getFieldInfoByName($field_name){

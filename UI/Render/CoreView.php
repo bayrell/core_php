@@ -16,7 +16,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-namespace Core\Http;
+namespace Core\UI\Render;
 use Runtime\rs;
 use Runtime\rtl;
 use Runtime\Map;
@@ -26,53 +26,51 @@ use Runtime\Collection;
 use Runtime\IntrospectionInfo;
 use Runtime\UIStruct;
 use Runtime\CoreStruct;
-use Core\Http\Request;
-class ApiRequest extends CoreStruct{
-	protected $__data;
+use Core\UI\Render\WebContainer;
+class CoreView extends CoreStruct{
 	/**
-	 * Assing request
-	 * @param Request request
-	 * @param ApiRequest req
-	 * @return ApiRequest
+	 * Returns module name
 	 */
-	static function assignRequest($req, $request){
-		if ($request == null){
-			return ;
-		}
-		$data = new Map();
-		/* Get data */
-		$request->payload->each(function ($key, $value) use (&$data){
-			$data->set($key, $value);
-		});
-		return $req->copy((new Map())->set("data", $data));
+	static function moduleName(){
+		return static::getCurrentNamespace();
+	}
+	/**
+	 * Returns module description
+	 */
+	static function moduleDescription(){
+		return rtl::toString(static::moduleName()) . ".ModuleDescription";
+	}
+	/**
+	 * Returns manager name
+	 */
+	static function managerName(){
+		/*rtl::dump( static::getCurrentClassName() );*/
+		return rtl::method(static::moduleDescription(), "componentManagerName")();
+	}
+	/**
+	 * Returns model name
+	 */
+	static function modelName(){
+		/*rtl::dump( static::getCurrentClassName() );*/
+		return rtl::method(static::moduleDescription(), "componentModelName")();
 	}
 	/* ======================= Class Init Functions ======================= */
-	public function getClassName(){return "Core.Http.ApiRequest";}
-	public static function getCurrentNamespace(){return "Core.Http";}
-	public static function getCurrentClassName(){return "Core.Http.ApiRequest";}
+	public function getClassName(){return "Core.UI.Render.CoreView";}
+	public static function getCurrentNamespace(){return "Core.UI.Render";}
+	public static function getCurrentClassName(){return "Core.UI.Render.CoreView";}
 	public static function getParentClassName(){return "Runtime.CoreStruct";}
-	protected function _init(){
-		parent::_init();
-		$this->__data = null;
-	}
 	public function assignObject($obj){
-		if ($obj instanceof ApiRequest){
-			$this->__data = $obj->__data;
+		if ($obj instanceof CoreView){
 		}
 		parent::assignObject($obj);
 	}
 	public function assignValue($variable_name, $value, $sender = null){
-		if ($variable_name == "data")$this->__data = rtl::convert($value,"Runtime.Dict",null,"mixed");
-		else parent::assignValue($variable_name, $value, $sender);
+		parent::assignValue($variable_name, $value, $sender);
 	}
 	public function takeValue($variable_name, $default_value = null){
-		if ($variable_name == "data") return $this->__data;
 		return parent::takeValue($variable_name, $default_value);
 	}
 	public static function getFieldsList($names, $flag=0){
-		if (($flag | 3)==3){
-			$names->push("data");
-		}
 	}
 	public static function getFieldInfoByName($field_name){
 		return null;
